@@ -27,6 +27,7 @@ export class GiftCardTemplateMapper {
     }
 
     domain.isActive = raw.isActive;
+    domain.redemptionType = (raw.redemptionType as 'partial' | 'full') || 'full';
     domain.createdBy = raw.createdBy;
     domain.createdAt = raw.createdAt;
     domain.updatedAt = raw.updatedAt;
@@ -46,6 +47,7 @@ export class GiftCardTemplateMapper {
     persistence.image = domain.image;
     persistence.codePosition = domain.codePosition;
     persistence.isActive = domain.isActive;
+    persistence.redemptionType = domain.redemptionType;
     persistence.createdBy = domain.createdBy;
     persistence.createdAt = domain.createdAt;
     persistence.updatedAt = domain.updatedAt;

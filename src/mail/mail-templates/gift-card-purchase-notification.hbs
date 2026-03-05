@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>New Gift Card Purchase</title>
+</head>
+
+<body style="margin:0;font-family:arial;background:#f5f5f5">
+    <table style="border:0;width:100%;max-width:600px;margin:0 auto;background:#ffffff">
+        <tr style="background:#00838f">
+            <td style="padding:20px;color:#ffffff;text-align:center;font-size:24px;font-weight:600">
+                New Gift Card Purchase
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:30px 20px;color:#333333;font-size:16px">
+                A new gift card has been purchased on {{app_name}}.
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:0 20px 20px">
+                <table style="width:100%;border-collapse:collapse">
+                    <tr>
+                        <td style="padding:8px 0;color:#808080;width:120px">Code</td>
+                        <td style="padding:8px 0;font-weight:700;font-family:monospace;font-size:18px">{{code}}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px 0;color:#808080">Amount</td>
+                        <td style="padding:8px 0;font-weight:600;font-size:18px">{{currencySymbol}}{{amount}}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px 0;color:#808080">Purchased By</td>
+                        <td style="padding:8px 0">{{purchaserName}} ({{purchaserEmail}})</td>
+                    </tr>
+                    {{#if recipientName}}
+                    <tr>
+                        <td style="padding:8px 0;color:#808080">Recipient</td>
+                        <td style="padding:8px 0">{{recipientName}}</td>
+                    </tr>
+                    {{/if}}
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:20px;color:#aaaaaa;font-size:12px;text-align:center;border-top:1px solid #eeeeee">
+                &copy; {{app_name}}
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

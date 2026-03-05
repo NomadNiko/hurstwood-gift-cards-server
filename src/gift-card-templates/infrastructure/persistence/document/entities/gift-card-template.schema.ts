@@ -49,6 +49,9 @@ export class GiftCardTemplateSchemaClass extends EntityDocumentHelper {
   @Prop({ type: CodePositionSchemaDefinition, required: true })
   codePosition: CodePositionSchema;
 
+  @Prop({ default: 'full', enum: ['partial', 'full'] })
+  redemptionType: string;
+
   @Prop({ default: true })
   isActive: boolean;
 

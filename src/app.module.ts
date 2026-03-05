@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { GiftCardTemplatesModule } from './gift-card-templates/gift-card-templates.module';
 import { GiftCardsModule } from './gift-cards/gift-cards.module';
 import { WidgetsModule } from './widgets/widgets.module';
+import { SettingsModule } from './settings/settings.module';
 import databaseConfig from './database/config/database.config';
 import authConfig from './auth/config/auth.config';
 import appConfig from './config/app.config';
@@ -98,6 +99,7 @@ const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
     GiftCardTemplatesModule,
     GiftCardsModule,
     WidgetsModule,
+    SettingsModule,
   ],
 })
 export class AppModule {}

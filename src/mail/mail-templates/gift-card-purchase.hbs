@@ -15,13 +15,29 @@
             </td>
         </tr>
         <tr>
-            <td style="padding:30px 20px;color:#333333;font-size:16px">
+            <td style="padding:30px 20px 10px;color:#333333;font-size:16px">
                 Hi {{purchaserName}},<br><br>
                 Thank you for purchasing a gift card from {{app_name}}!
             </td>
         </tr>
+
+        {{#if hasTemplate}}
         <tr>
-            <td style="padding:0 20px;text-align:center">
+            <td style="padding:10px 20px">
+                <!--[if mso]><v:rect style="width:560px;height:auto;" stroked="false"><v:fill type="frame" src="{{templateImage}}"/><![endif]-->
+                <div style="position:relative;width:100%;font-size:0;line-height:0">
+                    <img src="{{templateImage}}" alt="Gift Card" style="width:100%;display:block;border-radius:8px" />
+                    <div style="position:absolute;left:{{cpX}}%;top:{{cpY}}%;width:{{cpWidth}}%;height:{{cpHeight}}%;display:flex;align-items:center;justify-content:{{cpAlignment}};overflow:hidden">
+                        <span style="font-size:{{cpFontSize}}px;color:{{cpFontColor}};font-weight:bold;white-space:nowrap">{{code}}</span>
+                    </div>
+                </div>
+                <!--[if mso]></v:rect><![endif]-->
+            </td>
+        </tr>
+        {{/if}}
+
+        <tr>
+            <td style="padding:10px 20px;text-align:center">
                 <table style="width:100%;background:#f9f9f9;border:2px dashed #00838f;border-radius:8px">
                     <tr>
                         <td style="padding:20px;text-align:center">
@@ -32,7 +48,7 @@
                     <tr>
                         <td style="padding:0 20px 20px;text-align:center">
                             <div style="font-size:14px;color:#808080;margin-bottom:4px">Amount</div>
-                            <div style="font-size:24px;font-weight:600;color:#333333">${{amount}}</div>
+                            <div style="font-size:24px;font-weight:600;color:#333333">{{currencySymbol}}{{amount}}</div>
                         </td>
                     </tr>
                 </table>
@@ -40,27 +56,33 @@
         </tr>
         {{#if recipientName}}
         <tr>
-            <td style="padding:20px;color:#333333;font-size:14px;text-align:center">
+            <td style="padding:10px 20px;color:#333333;font-size:14px;text-align:center">
                 <em>For: {{recipientName}}</em>
             </td>
         </tr>
         {{/if}}
         {{#if notes}}
         <tr>
-            <td style="padding:0 20px 20px;color:#555555;font-size:14px;text-align:center;font-style:italic">
-                "{{notes}}"
+            <td style="padding:0 20px 10px;color:#555555;font-size:14px;text-align:center;font-style:italic">
+                &ldquo;{{notes}}&rdquo;
             </td>
         </tr>
         {{/if}}
         <tr>
             <td style="text-align:center;padding:20px">
+                <a href="{{viewUrl}}"
+                    style="display:inline-block;padding:14px 28px;background:#00838f;text-decoration:none;color:#ffffff;border-radius:4px;font-size:14px;margin-right:8px">View &amp; Print</a>
                 <a href="{{balanceUrl}}"
-                    style="display:inline-block;padding:14px 28px;background:#00838f;text-decoration:none;color:#ffffff;border-radius:4px;font-size:14px">Check Balance</a>
+                    style="display:inline-block;padding:14px 28px;background:#ffffff;text-decoration:none;color:#00838f;border:2px solid #00838f;border-radius:4px;font-size:14px">Check Balance</a>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:12px 20px;color:#808080;font-size:12px;text-align:center;background:#f9f9f9">
+                A printable version of your gift card is attached to this email.
             </td>
         </tr>
         <tr>
             <td style="padding:20px;color:#aaaaaa;font-size:12px;text-align:center;border-top:1px solid #eeeeee">
-                This gift card is non-refundable and can be used for partial payments.<br>
                 &copy; {{app_name}}
             </td>
         </tr>

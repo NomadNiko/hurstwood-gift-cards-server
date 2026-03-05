@@ -22,6 +22,7 @@ export class GiftCardTemplatesService {
       description: dto.description || '',
       image: dto.image,
       codePosition: dto.codePosition,
+      redemptionType: dto.redemptionType || 'full',
       isActive: dto.isActive ?? true,
       createdBy: userId,
     });

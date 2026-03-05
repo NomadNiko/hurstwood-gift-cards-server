@@ -123,10 +123,22 @@ export class MailService {
     mailData: MailData<{
       code: string;
       amount: number;
+      currencySymbol: string;
       purchaserName: string;
       recipientName?: string;
       notes?: string;
+      templateImage?: string;
+      codePosition?: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+        fontSize?: number;
+        fontColor?: string;
+        alignment?: string;
+      };
     }>,
+    bcc?: string[],
   ): Promise<void> {
     const url = new URL(
       this.configService.getOrThrow('app.frontendDomain', {
@@ -134,10 +146,37 @@ export class MailService {
       }) + '/gift-cards/balance',
     );
 
+    const viewUrl = new URL(
+      this.configService.getOrThrow('app.frontendDomain', {
+        infer: true,
+      }) + `/gift-cards/view/${mailData.data.code}`,
+    );
+
+    const { templateImage, codePosition } = mailData.data;
+    const hasTemplate = !!(templateImage && codePosition);
+
+    // Build printable HTML attachment
+    const attachments: Array<{
+      filename: string;
+      content: string;
+      contentType: string;
+    }> = [];
+    if (hasTemplate) {
+      const cp = codePosition!;
+      const printableHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Gift Card - ${mailData.data.code}</title><style>@media print{body{margin:0}}</style></head><body style="margin:0;font-family:arial;text-align:center;background:#f5f5f5"><div style="max-width:600px;margin:20px auto;background:#fff;padding:20px;border-radius:8px"><div style="position:relative;display:inline-block;width:100%"><img src="${templateImage}" style="width:100%;display:block" /><div style="position:absolute;left:${cp.x}%;top:${cp.y}%;width:${cp.width}%;height:${cp.height}%;display:flex;align-items:center;justify-content:${cp.alignment || 'center'};overflow:hidden"><span style="font-size:${cp.fontSize || 16}px;color:${cp.fontColor || '#000'};font-weight:bold;white-space:nowrap">${mailData.data.code}</span></div></div><h2 style="font-family:monospace;margin:16px 0 8px">${mailData.data.code}</h2><h3 style="color:#00838f;margin:0">${mailData.data.currencySymbol}${mailData.data.amount.toFixed(2)}</h3>${mailData.data.recipientName ? `<p>For: ${mailData.data.recipientName}</p>` : ''}${mailData.data.notes ? `<p style="font-style:italic;color:#555">&ldquo;${mailData.data.notes}&rdquo;</p>` : ''}</div></body></html>`;
+      attachments.push({
+        filename: `gift-card-${mailData.data.code}.html`,
+        content: printableHtml,
+        contentType: 'text/html',
+      });
+    }
+
     await this.mailerService.sendMail({
       to: mailData.to,
+      bcc: bcc?.length ? bcc : undefined,
+      attachments,
       subject: `Your Gift Card from ${this.configService.get('app.name', { infer: true })}`,
-      text: `Your gift card code is ${mailData.data.code} for $${mailData.data.amount}`,
+      text: `Your gift card code is ${mailData.data.code} for ${mailData.data.currencySymbol}${mailData.data.amount}`,
       templatePath: path.join(
         this.configService.getOrThrow('app.workingDirectory', {
           infer: true,
@@ -152,9 +191,60 @@ export class MailService {
         purchaserName: mailData.data.purchaserName,
         code: mailData.data.code,
         amount: mailData.data.amount.toFixed(2),
+        currencySymbol: mailData.data.currencySymbol,
         recipientName: mailData.data.recipientName,
         notes: mailData.data.notes,
         balanceUrl: url.toString(),
+        viewUrl: viewUrl.toString(),
+        hasTemplate,
+        templateImage,
+        cpX: codePosition?.x,
+        cpY: codePosition?.y,
+        cpWidth: codePosition?.width,
+        cpHeight: codePosition?.height,
+        cpFontSize: codePosition?.fontSize || 16,
+        cpFontColor: codePosition?.fontColor || '#000',
+        cpAlignment: codePosition?.alignment || 'center',
+      },
+    });
+  }
+
+  async giftCardPurchaseNotification(
+    mailData: {
+      to: string[];
+      code: string;
+      amount: number;
+      currencySymbol: string;
+      purchaserName: string;
+      purchaserEmail: string;
+      recipientName?: string;
+    },
+  ): Promise<void> {
+    if (!mailData.to.length) return;
+
+    const appName = this.configService.get('app.name', { infer: true });
+
+    await this.mailerService.sendMail({
+      to: mailData.to,
+      subject: `New Gift Card Purchase - ${mailData.currencySymbol}${mailData.amount.toFixed(2)}`,
+      text: `New gift card purchased: ${mailData.code} for ${mailData.currencySymbol}${mailData.amount.toFixed(2)} by ${mailData.purchaserName} (${mailData.purchaserEmail})`,
+      templatePath: path.join(
+        this.configService.getOrThrow('app.workingDirectory', {
+          infer: true,
+        }),
+        'src',
+        'mail',
+        'mail-templates',
+        'gift-card-purchase-notification.hbs',
+      ),
+      context: {
+        app_name: appName,
+        code: mailData.code,
+        amount: mailData.amount.toFixed(2),
+        currencySymbol: mailData.currencySymbol,
+        purchaserName: mailData.purchaserName,
+        purchaserEmail: mailData.purchaserEmail,
+        recipientName: mailData.recipientName,
       },
     });
   }

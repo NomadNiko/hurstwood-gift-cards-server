@@ -1,12 +1,12 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 export class RedeemGiftCardDto {
-  @ApiProperty({ example: 25.5 })
+  @ApiPropertyOptional({ example: 25.5 })
+  @IsOptional()
   @IsNumber()
   @Min(0.01)
-  @IsNotEmpty()
-  amount: number;
+  amount?: number;
 
   @ApiPropertyOptional()
   @IsOptional()

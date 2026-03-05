@@ -12,10 +12,19 @@ import { IPaginationOptions } from '../utils/types/pagination-options';
 import { SortGiftCardDto } from './dto/query-gift-card.dto';
 import { generateGiftCardCode } from './utils/generate-code';
 import { randomBytes } from 'crypto';
+import { MailService } from '../mail/mail.service';
+import { GiftCardTemplatesService } from '../gift-card-templates/gift-card-templates.service';
+import { SettingsService } from '../settings/settings.service';
+import { CURRENCY_SYMBOLS } from '../settings/settings.service';
 
 @Injectable()
 export class GiftCardsService {
-  constructor(private readonly repository: GiftCardRepository) {}
+  constructor(
+    private readonly repository: GiftCardRepository,
+    private readonly mailService: MailService,
+    private readonly templatesService: GiftCardTemplatesService,
+    private readonly settingsService: SettingsService,
+  ) {}
 
   async purchase(dto: CreateGiftCardDto): Promise<GiftCard> {
     let code: string;
@@ -23,7 +32,7 @@ export class GiftCardsService {
       code = generateGiftCardCode();
     } while (!(await this.repository.isCodeUnique(code)));
 
-    return this.repository.create({
+    const giftCard = await this.repository.create({
       code,
       templateId: dto.templateId,
       widgetId: dto.widgetId,
@@ -38,6 +47,53 @@ export class GiftCardsService {
       redemptions: [],
       notes: dto.notes,
     });
+
+    const settings = await this.settingsService.get();
+    const currencySymbol = CURRENCY_SYMBOLS[settings.currency] || '£';
+    const bcc = settings.notificationEmails || [];
+
+    // Look up template for email visual
+    const template = await this.templatesService.findById(dto.templateId);
+
+    const emailData = {
+      code: giftCard.code,
+      amount: giftCard.originalAmount,
+      currencySymbol,
+      purchaserName: dto.purchaserName,
+      recipientName: dto.recipientName,
+      notes: dto.notes,
+      templateImage: template?.image,
+      codePosition: template?.codePosition,
+    };
+
+    // Send email to purchaser (BCC notification list)
+    await this.mailService
+      .giftCardPurchase({ to: dto.purchaserEmail, data: emailData }, bcc)
+      .catch(() => {});
+
+    // If there's a separate recipient, email them too (BCC notification list)
+    if (dto.recipientEmail && dto.recipientEmail !== dto.purchaserEmail) {
+      await this.mailService
+        .giftCardPurchase({ to: dto.recipientEmail, data: emailData }, bcc)
+        .catch(() => {});
+    }
+
+    // Send purchase notification to email list
+    if (bcc.length) {
+      await this.mailService
+        .giftCardPurchaseNotification({
+          to: bcc,
+          code: giftCard.code,
+          amount: giftCard.originalAmount,
+          currencySymbol,
+          purchaserName: dto.purchaserName,
+          purchaserEmail: dto.purchaserEmail,
+          recipientName: dto.recipientName,
+        })
+        .catch(() => {});
+    }
+
+    return giftCard;
   }
 
   findManyWithPagination(params: {
@@ -84,19 +140,28 @@ export class GiftCardsService {
       });
     }
 
-    if (dto.amount > giftCard.currentBalance) {
+    // Look up template to determine redemption type
+    const template = await this.templatesService.findById(giftCard.templateId);
+    const isFullRedemption = !template || template.redemptionType === 'full';
+
+    const redeemAmount = isFullRedemption
+      ? giftCard.currentBalance
+      : dto.amount ?? giftCard.currentBalance;
+
+    if (redeemAmount > giftCard.currentBalance) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: { amount: 'amountExceedsBalance' },
       });
     }
 
-    const remainingBalance =
-      Math.round((giftCard.currentBalance - dto.amount) * 100) / 100;
+    const remainingBalance = isFullRedemption
+      ? 0
+      : Math.round((giftCard.currentBalance - redeemAmount) * 100) / 100;
 
     const redemption: Redemption = {
       id: randomBytes(12).toString('hex'),
-      amount: dto.amount,
+      amount: redeemAmount,
       redeemedBy: userId,
       redeemedAt: new Date(),
       notes: dto.notes,

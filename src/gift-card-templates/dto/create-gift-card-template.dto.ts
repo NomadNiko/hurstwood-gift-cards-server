@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
+  IsIn,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -77,4 +78,9 @@ export class CreateGiftCardTemplateDto {
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
+
+  @ApiPropertyOptional({ enum: ['partial', 'full'], example: 'full' })
+  @IsOptional()
+  @IsIn(['partial', 'full'])
+  redemptionType?: 'partial' | 'full';
 }

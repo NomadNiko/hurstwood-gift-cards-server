@@ -39,6 +39,9 @@ export class GiftCardTemplate {
   @ApiProperty({ type: () => CodePosition })
   codePosition: CodePosition;
 
+  @ApiProperty({ enum: ['partial', 'full'], example: 'full' })
+  redemptionType: 'partial' | 'full';
+
   @ApiProperty({ type: Boolean })
   isActive: boolean;
 
