@@ -18,10 +18,15 @@ export class WidgetMapper {
       const c = new WidgetCustomization();
       c.primaryColor = raw.customization.primaryColor;
       c.secondaryColor = raw.customization.secondaryColor;
+      c.backgroundColor = raw.customization.backgroundColor;
+      c.textColor = raw.customization.textColor;
+      c.fieldLabelColor = raw.customization.fieldLabelColor;
+      c.fieldTextColor = raw.customization.fieldTextColor;
       c.buttonText = raw.customization.buttonText;
       c.logoUrl = raw.customization.logoUrl;
       c.headerText = raw.customization.headerText;
       c.footerText = raw.customization.footerText;
+      c.titleDisplay = raw.customization.titleDisplay;
       domain.customization = c;
     }
 

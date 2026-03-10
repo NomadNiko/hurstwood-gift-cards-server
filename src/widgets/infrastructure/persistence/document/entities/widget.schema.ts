@@ -12,6 +12,18 @@ export class WidgetCustomizationSchema {
   @Prop()
   secondaryColor?: string;
 
+  @Prop()
+  backgroundColor?: string;
+
+  @Prop()
+  textColor?: string;
+
+  @Prop()
+  fieldLabelColor?: string;
+
+  @Prop()
+  fieldTextColor?: string;
+
   @Prop({ required: true })
   buttonText: string;
 
@@ -23,6 +35,9 @@ export class WidgetCustomizationSchema {
 
   @Prop()
   footerText?: string;
+
+  @Prop()
+  titleDisplay?: string;
 }
 
 export const WidgetCustomizationSchemaDefinition = SchemaFactory.createForClass(

@@ -85,7 +85,7 @@ export class WidgetsService {
 
     const iframe = document.createElement('iframe');
     iframe.src = \`\${CONFIG.appUrl}/widget/\${CONFIG.apiKey}\`;
-    iframe.style.cssText = 'width: 600px; height: 800px; border: none; display: block; overflow: hidden;';
+    iframe.style.cssText = 'width: 100%; max-width: 600px; height: 660px; border: none; display: block; overflow: hidden;';
     iframe.setAttribute('allow', 'clipboard-write');
     iframe.setAttribute('scrolling', 'no');
     iframe.setAttribute('title', 'Gift Card Purchase Widget');

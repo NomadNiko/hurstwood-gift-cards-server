@@ -19,6 +19,26 @@ export class WidgetCustomizationDto {
   @IsString()
   secondaryColor?: string;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  backgroundColor?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  textColor?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  fieldLabelColor?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  fieldTextColor?: string;
+
   @ApiProperty({ example: 'Buy Gift Card' })
   @IsString()
   buttonText: string;
@@ -37,6 +57,11 @@ export class WidgetCustomizationDto {
   @IsOptional()
   @IsString()
   footerText?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  titleDisplay?: string;
 }
 
 export class CreateWidgetDto {

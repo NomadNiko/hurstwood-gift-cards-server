@@ -74,6 +74,12 @@ export class GiftCardTemplatesController {
     return this.service.findActive();
   }
 
+  @Get('public/:id')
+  @HttpCode(HttpStatus.OK)
+  findOnePublic(@Param('id') id: string): Promise<GiftCardTemplate | null> {
+    return this.service.findById(id);
+  }
+
   @Get(':id')
   @ApiBearerAuth()
   @Roles(RoleEnum.admin)

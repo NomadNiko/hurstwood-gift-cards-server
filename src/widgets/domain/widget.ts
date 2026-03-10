@@ -7,6 +7,18 @@ export class WidgetCustomization {
   @ApiPropertyOptional({ example: '#ffffff' })
   secondaryColor?: string;
 
+  @ApiPropertyOptional()
+  backgroundColor?: string;
+
+  @ApiPropertyOptional()
+  textColor?: string;
+
+  @ApiPropertyOptional()
+  fieldLabelColor?: string;
+
+  @ApiPropertyOptional()
+  fieldTextColor?: string;
+
   @ApiProperty({ example: 'Buy Gift Card' })
   buttonText: string;
 
@@ -18,6 +30,9 @@ export class WidgetCustomization {
 
   @ApiPropertyOptional()
   footerText?: string;
+
+  @ApiPropertyOptional()
+  titleDisplay?: string;
 }
 
 export class Widget {

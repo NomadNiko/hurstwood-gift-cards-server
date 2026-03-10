@@ -52,7 +52,15 @@ export class WidgetsDocumentRepository implements WidgetRepository {
     const existing = await this.model.findById(id);
     if (!existing) return null;
 
-    const merged = { ...WidgetMapper.toDomain(existing), ...payload };
+    const existingDomain = WidgetMapper.toDomain(existing);
+    const merged = {
+      ...existingDomain,
+      ...payload,
+      customization: {
+        ...existingDomain.customization,
+        ...payload.customization,
+      },
+    };
     const result = await this.model.findByIdAndUpdate(
       id,
       WidgetMapper.toPersistence(merged),
