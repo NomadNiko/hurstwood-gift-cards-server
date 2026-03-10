@@ -146,6 +146,7 @@ export class MailService {
       qrPosition?: { x: number; y: number; size: number };
     }>,
     bcc?: string[],
+    isRecipient = false,
   ): Promise<void> {
     const url = new URL(
       this.configService.getOrThrow('app.frontendDomain', {
@@ -229,7 +230,9 @@ export class MailService {
       to: mailData.to,
       bcc: bcc?.length ? bcc : undefined,
       attachments,
-      subject: `Your Gift Card from ${this.configService.get('app.name', { infer: true })}`,
+      subject: isRecipient
+        ? `You Received a Gift Card from ${mailData.data.purchaserName}`
+        : `Your Gift Card from ${this.configService.get('app.name', { infer: true })}`,
       text: `Your gift card code is ${mailData.data.code} for ${mailData.data.currencySymbol}${mailData.data.amount}`,
       templatePath: path.join(
         this.configService.getOrThrow('app.workingDirectory', {
@@ -238,7 +241,7 @@ export class MailService {
         'src',
         'mail',
         'mail-templates',
-        'gift-card-purchase.hbs',
+        isRecipient ? 'gift-card-recipient.hbs' : 'gift-card-purchase.hbs',
       ),
       context: {
         app_name: this.configService.get('app.name', { infer: true }),

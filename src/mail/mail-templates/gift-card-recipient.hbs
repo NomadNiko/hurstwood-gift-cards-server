@@ -1,0 +1,117 @@
+<html lang='en'>
+
+  <head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1' />
+    <title>You Received a Gift Card</title>
+  </head>
+
+  <body style='margin:0;font-family:arial;background:#f5f5f5'>
+    <table
+      style='border:0;width:100%;max-width:600px;margin:0 auto;background:#ffffff'
+    >
+      <tr style='background:#00838f'>
+        <td
+          style='padding:20px;color:#ffffff;text-align:center;font-size:28px;font-weight:600'
+        >
+          {{app_name}}
+        </td>
+      </tr>
+      <tr>
+        <td style='padding:30px 20px 10px;color:#333333;font-size:16px'>
+          Hi
+          {{recipientName}},<br /><br />
+          {{purchaserName}}
+          has sent you a gift card from
+          {{app_name}}!
+        </td>
+      </tr>
+
+      {{#if hasInlineImage}}
+        <tr>
+          <td style='padding:10px 20px'>
+            <img
+              src='cid:giftcardimage'
+              alt='Gift Card'
+              style='width:100%;display:block;border-radius:8px'
+            />
+          </td>
+        </tr>
+      {{/if}}
+
+      <tr>
+        <td style='padding:10px 20px;text-align:center'>
+          <table
+            style='width:100%;background:#f9f9f9;border:2px dashed #00838f;border-radius:8px'
+          >
+            <tr>
+              <td style='padding:20px;text-align:center'>
+                <div style='font-size:14px;color:#808080;margin-bottom:8px'>Gift
+                  Card Code</div>
+                <div
+                  style='font-size:28px;font-weight:700;color:#00838f;letter-spacing:2px'
+                >{{code}}</div>
+              </td>
+            </tr>
+            <tr>
+              <td style='padding:0 20px 10px;text-align:center'>
+                <div
+                  style='font-size:14px;color:#808080;margin-bottom:4px'
+                >Amount</div>
+                <div
+                  style='font-size:24px;font-weight:600;color:#333333'
+                >{{currencySymbol}}{{amount}}</div>
+              </td>
+            </tr>
+            <tr>
+              <td style='padding:0 20px 20px;text-align:center'>
+                <div
+                  style='font-size:13px;color:#808080'
+                >{{expirationLabel}}</div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      {{#if notes}}
+        <tr>
+          <td
+            style='padding:10px 20px;color:#555555;font-size:14px;text-align:center;font-style:italic;background:#f9f9f9;border-radius:4px;margin:10px 20px'
+          >
+            <div style='color:#808080;font-size:12px;margin-bottom:4px'>Personal
+              Message:</div>
+            &ldquo;{{notes}}&rdquo;
+          </td>
+        </tr>
+      {{/if}}
+      <tr>
+        <td style='text-align:center;padding:20px'>
+          <a
+            href='{{viewUrl}}'
+            style='display:inline-block;padding:14px 28px;background:#00838f;text-decoration:none;color:#ffffff;border-radius:4px;font-size:14px;margin-right:8px'
+          >View &amp; Print</a>
+          <a
+            href='{{balanceUrl}}'
+            style='display:inline-block;padding:14px 28px;background:#ffffff;text-decoration:none;color:#00838f;border:2px solid #00838f;border-radius:4px;font-size:14px'
+          >Check Balance</a>
+        </td>
+      </tr>
+      <tr>
+        <td
+          style='padding:12px 20px;color:#808080;font-size:12px;text-align:center;background:#f9f9f9'
+        >
+          A printable PDF of your gift card is attached to this email.
+        </td>
+      </tr>
+      <tr>
+        <td
+          style='padding:20px;color:#aaaaaa;font-size:12px;text-align:center;border-top:1px solid #eeeeee'
+        >
+          &copy;
+          {{app_name}}
+        </td>
+      </tr>
+    </table>
+  </body>
+
+</html>

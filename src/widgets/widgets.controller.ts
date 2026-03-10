@@ -11,7 +11,9 @@ import {
   HttpStatus,
   HttpCode,
   Request,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
@@ -40,10 +42,7 @@ export class WidgetsController {
   @Roles(RoleEnum.admin)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @HttpCode(HttpStatus.CREATED)
-  create(
-    @Body() dto: CreateWidgetDto,
-    @Request() req,
-  ): Promise<Widget> {
+  create(@Body() dto: CreateWidgetDto, @Request() req): Promise<Widget> {
     return this.service.create(dto, req.user.id);
   }
 
@@ -71,6 +70,14 @@ export class WidgetsController {
   @HttpCode(HttpStatus.OK)
   findByApiKey(@Param('apiKey') apiKey: string): Promise<Widget | null> {
     return this.service.findByApiKey(apiKey);
+  }
+
+  @Get('loader/:apiKey/widget.js')
+  @HttpCode(HttpStatus.OK)
+  async getWidgetLoader(@Param('apiKey') apiKey: string, @Res() res: Response) {
+    const { script, headers } = await this.service.generateWidgetLoader(apiKey);
+    res.set(headers);
+    res.send(script);
   }
 
   @Get(':id')

@@ -79,7 +79,11 @@ export class GiftCardsService {
     // If there's a separate recipient, email them too (BCC notification list)
     if (dto.recipientEmail && dto.recipientEmail !== dto.purchaserEmail) {
       await this.mailService
-        .giftCardPurchase({ to: dto.recipientEmail, data: emailData }, bcc)
+        .giftCardPurchase(
+          { to: dto.recipientEmail, data: emailData },
+          bcc,
+          true,
+        )
         .catch(() => {});
     }
 
