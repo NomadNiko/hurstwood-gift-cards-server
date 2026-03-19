@@ -18,6 +18,15 @@ export class Redemption {
 
   @ApiProperty()
   remainingBalance: number;
+
+  @ApiPropertyOptional()
+  reversed?: boolean;
+
+  @ApiPropertyOptional()
+  reversedAt?: Date;
+
+  @ApiPropertyOptional()
+  reversedBy?: string;
 }
 
 export class GiftCard {

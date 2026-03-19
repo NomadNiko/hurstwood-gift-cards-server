@@ -23,6 +23,7 @@ import { RoleEnum } from '../roles/roles.enum';
 import { GiftCardsService } from './gift-cards.service';
 import { CreateGiftCardDto } from './dto/create-gift-card.dto';
 import { RedeemGiftCardDto } from './dto/redeem-gift-card.dto';
+import { UnredeemGiftCardDto } from './dto/unredeem-gift-card.dto';
 import { QueryGiftCardDto } from './dto/query-gift-card.dto';
 import { GiftCard } from './domain/gift-card';
 import {
@@ -183,5 +184,18 @@ export class GiftCardsController {
   @HttpCode(HttpStatus.OK)
   cancel(@Param('id') id: string): Promise<GiftCard | null> {
     return this.service.cancel(id);
+  }
+
+  @Post(':id/unredeem')
+  @ApiBearerAuth()
+  @Roles(RoleEnum.admin)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @HttpCode(HttpStatus.OK)
+  unredeem(
+    @Param('id') id: string,
+    @Body() dto: UnredeemGiftCardDto,
+    @Request() req,
+  ): Promise<GiftCard> {
+    return this.service.unredeem(id, dto.redemptionId, req.user.id);
   }
 }

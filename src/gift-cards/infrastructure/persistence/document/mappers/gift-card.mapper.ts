@@ -32,6 +32,9 @@ export class GiftCardMapper {
       redemption.redeemedAt = r.redeemedAt;
       redemption.notes = r.notes;
       redemption.remainingBalance = r.remainingBalance;
+      redemption.reversed = r.reversed;
+      redemption.reversedAt = r.reversedAt;
+      redemption.reversedBy = r.reversedBy;
       return redemption;
     });
 
@@ -67,6 +70,9 @@ export class GiftCardMapper {
       rs.redeemedAt = r.redeemedAt;
       rs.notes = r.notes;
       rs.remainingBalance = r.remainingBalance;
+      rs.reversed = r.reversed;
+      rs.reversedAt = r.reversedAt;
+      rs.reversedBy = r.reversedBy;
       return rs;
     });
 

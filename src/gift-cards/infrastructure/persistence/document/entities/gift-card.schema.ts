@@ -23,6 +23,15 @@ export class RedemptionSchema {
 
   @Prop({ required: true })
   remainingBalance: number;
+
+  @Prop()
+  reversed?: boolean;
+
+  @Prop()
+  reversedAt?: Date;
+
+  @Prop()
+  reversedBy?: string;
 }
 
 export const RedemptionSchemaDefinition =
@@ -85,7 +94,6 @@ export class GiftCardSchemaClass extends EntityDocumentHelper {
   updatedAt: Date;
 }
 
-export const GiftCardSchema =
-  SchemaFactory.createForClass(GiftCardSchemaClass);
+export const GiftCardSchema = SchemaFactory.createForClass(GiftCardSchemaClass);
 
 GiftCardSchema.index({ purchaseDate: -1 });

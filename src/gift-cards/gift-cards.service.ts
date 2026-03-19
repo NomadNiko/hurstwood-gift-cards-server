@@ -249,4 +249,65 @@ export class GiftCardsService {
   async cancel(id: string): Promise<GiftCard | null> {
     return this.repository.update(id, { status: 'cancelled' });
   }
+
+  async unredeem(
+    id: string,
+    redemptionId: string,
+    userId: string,
+  ): Promise<GiftCard> {
+    const giftCard = await this.repository.findById(id);
+
+    if (!giftCard) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: { id: 'giftCardNotFound' },
+      });
+    }
+
+    const redemption = giftCard.redemptions.find((r) => r.id === redemptionId);
+
+    if (!redemption) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: { redemptionId: 'redemptionNotFound' },
+      });
+    }
+
+    if (redemption.reversed) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: { redemptionId: 'alreadyReversed' },
+      });
+    }
+
+    redemption.reversed = true;
+    redemption.reversedAt = new Date();
+    redemption.reversedBy = userId;
+
+    const newBalance =
+      Math.round((giftCard.currentBalance + redemption.amount) * 100) / 100;
+
+    const activeRedemptions = giftCard.redemptions.filter((r) => !r.reversed);
+    const newStatus: GiftCard['status'] =
+      activeRedemptions.length === 0
+        ? 'active'
+        : newBalance === 0
+          ? 'fully_redeemed'
+          : 'partially_redeemed';
+
+    const updated = await this.repository.update(id, {
+      currentBalance: newBalance,
+      status: newStatus,
+      redemptions: giftCard.redemptions,
+    });
+
+    if (!updated) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: { id: 'updateFailed' },
+      });
+    }
+
+    return updated;
+  }
 }
