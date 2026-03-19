@@ -121,7 +121,7 @@ export class GiftCardsController {
 
   @Get()
   @ApiBearerAuth()
-  @Roles(RoleEnum.admin)
+  @Roles(RoleEnum.admin, RoleEnum.staff)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiOkResponse({ type: InfinityPaginationResponse(GiftCard) })
   @HttpCode(HttpStatus.OK)
@@ -145,7 +145,7 @@ export class GiftCardsController {
 
   @Get(':id')
   @ApiBearerAuth()
-  @Roles(RoleEnum.admin)
+  @Roles(RoleEnum.admin, RoleEnum.staff)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string): Promise<GiftCard | null> {
@@ -166,7 +166,7 @@ export class GiftCardsController {
 
   @Post(':id/redeem')
   @ApiBearerAuth()
-  @Roles(RoleEnum.admin)
+  @Roles(RoleEnum.admin, RoleEnum.staff)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @HttpCode(HttpStatus.OK)
   redeem(
@@ -179,7 +179,7 @@ export class GiftCardsController {
 
   @Patch(':id/cancel')
   @ApiBearerAuth()
-  @Roles(RoleEnum.admin)
+  @Roles(RoleEnum.admin, RoleEnum.staff)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @HttpCode(HttpStatus.OK)
   cancel(@Param('id') id: string): Promise<GiftCard | null> {
@@ -188,7 +188,7 @@ export class GiftCardsController {
 
   @Post(':id/unredeem')
   @ApiBearerAuth()
-  @Roles(RoleEnum.admin)
+  @Roles(RoleEnum.admin, RoleEnum.staff)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @HttpCode(HttpStatus.OK)
   unredeem(
