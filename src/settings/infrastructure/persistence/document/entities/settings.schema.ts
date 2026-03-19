@@ -4,6 +4,25 @@ import { EntityDocumentHelper } from '../../../../../utils/document-entity-helpe
 
 export type SettingsSchemaDocument = HydratedDocument<SettingsSchemaClass>;
 
+@Schema({ _id: false })
+export class SquarespacePayLinkSchema {
+  @Prop({ required: true })
+  _id: string;
+
+  @Prop({ required: true })
+  name: string;
+
+  @Prop({ required: true })
+  productName: string;
+
+  @Prop({ required: true })
+  templateId: string;
+}
+
+export const SquarespacePayLinkSchemaDefinition = SchemaFactory.createForClass(
+  SquarespacePayLinkSchema,
+);
+
 @Schema({ timestamps: true, toJSON: { virtuals: true, getters: true } })
 export class SettingsSchemaClass extends EntityDocumentHelper {
   @Prop({ default: 'GBP', enum: ['GBP', 'EUR', 'USD'] })
@@ -18,7 +37,7 @@ export class SettingsSchemaClass extends EntityDocumentHelper {
   @Prop({ default: 'sandbox', enum: ['sandbox', 'production'] })
   paymentMode: string;
 
-  @Prop({ default: 'stripe', enum: ['stripe', 'square'] })
+  @Prop({ default: 'stripe', enum: ['stripe', 'square', 'squarespace'] })
   paymentGateway: string;
 
   @Prop({ default: '' })
@@ -27,9 +46,20 @@ export class SettingsSchemaClass extends EntityDocumentHelper {
   @Prop({ default: '' })
   stripeWebhookSecret: string;
 
+  @Prop({ default: '' })
+  squarespaceApiKey: string;
+
+  @Prop({ default: 30 })
+  squarespacePollingInterval: number;
+
+  @Prop({ type: [SquarespacePayLinkSchemaDefinition], default: [] })
+  squarespacePayLinks: SquarespacePayLinkSchema[];
+
+  @Prop()
+  squarespaceLastPollAt?: Date;
+
   @Prop({ default: now })
   updatedAt: Date;
 }
 
-export const SettingsSchema =
-  SchemaFactory.createForClass(SettingsSchemaClass);
+export const SettingsSchema = SchemaFactory.createForClass(SettingsSchemaClass);

@@ -3,9 +3,29 @@ import {
   IsArray,
   IsEmail,
   IsIn,
+  IsNumber,
   IsOptional,
   IsString,
+  Max,
+  Min,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+
+export class SquarespacePayLinkDto {
+  @IsOptional()
+  @IsString()
+  id?: string;
+
+  @IsString()
+  name: string;
+
+  @IsString()
+  productName: string;
+
+  @IsString()
+  templateId: string;
+}
 
 export class UpdateSettingsDto {
   @ApiPropertyOptional({ enum: ['GBP', 'EUR', 'USD'] })
@@ -29,10 +49,10 @@ export class UpdateSettingsDto {
   @IsIn(['sandbox', 'production'])
   paymentMode?: 'sandbox' | 'production';
 
-  @ApiPropertyOptional({ enum: ['stripe', 'square'] })
+  @ApiPropertyOptional({ enum: ['stripe', 'square', 'squarespace'] })
   @IsOptional()
-  @IsIn(['stripe', 'square'])
-  paymentGateway?: 'stripe' | 'square';
+  @IsIn(['stripe', 'square', 'squarespace'])
+  paymentGateway?: 'stripe' | 'square' | 'squarespace';
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -43,4 +63,23 @@ export class UpdateSettingsDto {
   @IsOptional()
   @IsString()
   stripeWebhookSecret?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  squarespaceApiKey?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  @Min(30)
+  @Max(300)
+  squarespacePollingInterval?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => SquarespacePayLinkDto)
+  squarespacePayLinks?: SquarespacePayLinkDto[];
 }

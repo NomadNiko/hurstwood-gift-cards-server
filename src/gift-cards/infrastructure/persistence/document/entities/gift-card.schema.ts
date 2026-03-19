@@ -87,6 +87,9 @@ export class GiftCardSchemaClass extends EntityDocumentHelper {
   @Prop()
   stripeSessionId?: string;
 
+  @Prop({ index: true })
+  squarespaceOrderId?: string;
+
   @Prop({ default: now })
   createdAt: Date;
 

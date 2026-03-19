@@ -24,6 +24,10 @@ export abstract class GiftCardRepository {
     sessionId: string,
   ): Promise<NullableType<GiftCard>>;
 
+  abstract findBySquarespaceOrderId(
+    orderId: string,
+  ): Promise<NullableType<GiftCard>>;
+
   abstract update(
     id: GiftCard['id'],
     payload: Partial<GiftCard>,

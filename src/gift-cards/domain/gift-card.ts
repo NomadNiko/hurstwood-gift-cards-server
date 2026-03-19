@@ -77,6 +77,9 @@ export class GiftCard {
   @ApiPropertyOptional()
   stripeSessionId?: string;
 
+  @ApiPropertyOptional()
+  squarespaceOrderId?: string;
+
   @ApiProperty()
   createdAt: Date;
 

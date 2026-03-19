@@ -6,6 +6,7 @@ import { GiftCardTemplatesModule } from './gift-card-templates/gift-card-templat
 import { GiftCardsModule } from './gift-cards/gift-cards.module';
 import { WidgetsModule } from './widgets/widgets.module';
 import { SettingsModule } from './settings/settings.module';
+import { SquarespaceModule } from './squarespace/squarespace.module';
 import databaseConfig from './database/config/database.config';
 import authConfig from './auth/config/auth.config';
 import appConfig from './config/app.config';
@@ -100,6 +101,7 @@ const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
     GiftCardsModule,
     WidgetsModule,
     SettingsModule,
+    SquarespaceModule,
   ],
 })
 export class AppModule {}

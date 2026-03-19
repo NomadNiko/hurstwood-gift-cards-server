@@ -34,8 +34,7 @@ export class GiftCardsDocumentRepository implements GiftCardRepository {
   }): Promise<GiftCard[]> {
     const where: FilterQuery<GiftCardSchemaClass> = {};
     if (filterOptions?.status) where.status = filterOptions.status;
-    if (filterOptions?.templateId)
-      where.templateId = filterOptions.templateId;
+    if (filterOptions?.templateId) where.templateId = filterOptions.templateId;
 
     const results = await this.model
       .find(where)
@@ -78,6 +77,13 @@ export class GiftCardsDocumentRepository implements GiftCardRepository {
     sessionId: string,
   ): Promise<NullableType<GiftCard>> {
     const result = await this.model.findOne({ stripeSessionId: sessionId });
+    return result ? GiftCardMapper.toDomain(result) : null;
+  }
+
+  async findBySquarespaceOrderId(
+    orderId: string,
+  ): Promise<NullableType<GiftCard>> {
+    const result = await this.model.findOne({ squarespaceOrderId: orderId });
     return result ? GiftCardMapper.toDomain(result) : null;
   }
 

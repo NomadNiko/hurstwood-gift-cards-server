@@ -1,5 +1,19 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
+export class SquarespacePayLink {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  productName: string;
+
+  @ApiProperty()
+  templateId: string;
+}
+
 export class Settings {
   @ApiProperty({ type: String })
   id: string;
@@ -16,14 +30,29 @@ export class Settings {
   @ApiProperty({ enum: ['sandbox', 'production'], example: 'sandbox' })
   paymentMode: 'sandbox' | 'production';
 
-  @ApiProperty({ enum: ['stripe', 'square'], example: 'stripe' })
-  paymentGateway: 'stripe' | 'square';
+  @ApiProperty({
+    enum: ['stripe', 'square', 'squarespace'],
+    example: 'stripe',
+  })
+  paymentGateway: 'stripe' | 'square' | 'squarespace';
 
   @ApiPropertyOptional()
   stripeSecretKey?: string;
 
   @ApiPropertyOptional()
   stripeWebhookSecret?: string;
+
+  @ApiPropertyOptional()
+  squarespaceApiKey?: string;
+
+  @ApiPropertyOptional()
+  squarespacePollingInterval?: number;
+
+  @ApiPropertyOptional({ type: [SquarespacePayLink] })
+  squarespacePayLinks?: SquarespacePayLink[];
+
+  @ApiPropertyOptional()
+  squarespaceLastPollAt?: Date;
 
   @ApiProperty()
   updatedAt: Date;
