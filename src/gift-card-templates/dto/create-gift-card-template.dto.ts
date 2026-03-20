@@ -9,6 +9,7 @@ import {
   IsString,
   Max,
   Min,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -107,8 +108,19 @@ export class CreateGiftCardTemplateDto {
 
   @ApiPropertyOptional({ example: '2026-12-31' })
   @IsOptional()
+  @ValidateIf((o) => o.expirationDate !== null)
   @IsDateString()
-  expirationDate?: string;
+  expirationDate?: string | null;
+
+  @ApiPropertyOptional({
+    example: 12,
+    description: 'Months after purchase date until expiration',
+  })
+  @IsOptional()
+  @ValidateIf((o) => o.expirationMonths !== null)
+  @IsNumber()
+  @Min(1)
+  expirationMonths?: number | null;
 
   @ApiPropertyOptional({
     example: 'GC',

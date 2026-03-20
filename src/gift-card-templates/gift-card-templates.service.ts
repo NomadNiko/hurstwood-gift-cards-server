@@ -24,6 +24,7 @@ export class GiftCardTemplatesService {
       expirationDate: dto.expirationDate
         ? new Date(dto.expirationDate)
         : undefined,
+      expirationMonths: dto.expirationMonths || undefined,
       codePrefix: dto.codePrefix || 'GC',
       qrPosition: dto.qrPosition,
       isActive: dto.isActive ?? true,
@@ -56,7 +57,16 @@ export class GiftCardTemplatesService {
     id: string,
     dto: UpdateGiftCardTemplateDto,
   ): Promise<GiftCardTemplate | null> {
-    return this.repository.update(id, dto);
+    const payload: Record<string, any> = { ...dto };
+    if (dto.expirationDate) {
+      payload.expirationDate = new Date(dto.expirationDate);
+    } else if ('expirationDate' in dto) {
+      payload.expirationDate = null;
+    }
+    if ('expirationMonths' in dto && !dto.expirationMonths) {
+      payload.expirationMonths = null;
+    }
+    return this.repository.update(id, payload);
   }
 
   softDelete(id: string): Promise<void> {

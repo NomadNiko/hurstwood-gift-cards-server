@@ -71,6 +71,12 @@ export class GiftCardTemplate {
   @ApiPropertyOptional({ type: String, example: '2026-12-31' })
   expirationDate?: Date;
 
+  @ApiPropertyOptional({
+    example: 12,
+    description: 'Months after purchase date until expiration',
+  })
+  expirationMonths?: number;
+
   @ApiProperty({
     type: String,
     example: 'GC',

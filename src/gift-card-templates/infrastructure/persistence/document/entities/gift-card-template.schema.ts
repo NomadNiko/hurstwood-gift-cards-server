@@ -55,6 +55,9 @@ export class GiftCardTemplateSchemaClass extends EntityDocumentHelper {
   @Prop({ default: null })
   expirationDate?: Date;
 
+  @Prop({ default: null })
+  expirationMonths?: number;
+
   @Prop({ default: 'GC' })
   codePrefix: string;
 

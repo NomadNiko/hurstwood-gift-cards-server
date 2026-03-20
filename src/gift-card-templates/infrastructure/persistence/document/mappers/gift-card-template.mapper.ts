@@ -28,6 +28,7 @@ export class GiftCardTemplateMapper {
     domain.redemptionType =
       (raw.redemptionType as 'partial' | 'full') || 'full';
     domain.expirationDate = raw.expirationDate || undefined;
+    domain.expirationMonths = raw.expirationMonths ?? undefined;
     domain.codePrefix = raw.codePrefix || 'GC';
     domain.qrPosition = raw.qrPosition || undefined;
     domain.createdBy = raw.createdBy;
@@ -49,6 +50,7 @@ export class GiftCardTemplateMapper {
     persistence.isActive = domain.isActive;
     persistence.redemptionType = domain.redemptionType;
     persistence.expirationDate = domain.expirationDate;
+    persistence.expirationMonths = domain.expirationMonths;
     persistence.codePrefix = domain.codePrefix;
     persistence.qrPosition = domain.qrPosition;
     persistence.createdBy = domain.createdBy;

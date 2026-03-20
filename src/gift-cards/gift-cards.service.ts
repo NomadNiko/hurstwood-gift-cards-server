@@ -14,8 +14,22 @@ import { generateGiftCardCode } from './utils/generate-code';
 import { randomBytes } from 'crypto';
 import { MailService } from '../mail/mail.service';
 import { GiftCardTemplatesService } from '../gift-card-templates/gift-card-templates.service';
+import { GiftCardTemplate } from '../gift-card-templates/domain/gift-card-template';
 import { SettingsService } from '../settings/settings.service';
 import { CURRENCY_SYMBOLS } from '../settings/settings.service';
+
+function getEffectiveExpiration(
+  template: GiftCardTemplate | null | undefined,
+  purchaseDate?: Date,
+): Date | undefined {
+  if (template?.expirationDate) return new Date(template.expirationDate);
+  if (template?.expirationMonths && purchaseDate) {
+    const d = new Date(purchaseDate);
+    d.setMonth(d.getMonth() + template.expirationMonths);
+    return d;
+  }
+  return undefined;
+}
 
 @Injectable()
 export class GiftCardsService {
@@ -71,7 +85,7 @@ export class GiftCardsService {
       purchaserName: dto.purchaserName,
       recipientName: dto.recipientName,
       notes: dto.notes,
-      expirationDate: template?.expirationDate,
+      expirationDate: getEffectiveExpiration(template, giftCard.purchaseDate),
       templateImage: template?.image,
       codePosition: template?.codePosition,
       qrPosition: template?.qrPosition,
@@ -156,10 +170,8 @@ export class GiftCardsService {
       const template = await this.templatesService.findById(
         giftCard.templateId,
       );
-      if (
-        template?.expirationDate &&
-        new Date() > new Date(template.expirationDate)
-      ) {
+      const expDate = getEffectiveExpiration(template, giftCard.purchaseDate);
+      if (expDate && new Date() > expDate) {
         await this.repository.update(giftCard.id, {
           currentBalance: 0,
           status: 'fully_redeemed',
@@ -197,10 +209,8 @@ export class GiftCardsService {
     // Look up template to determine redemption type and expiration
     const template = await this.templatesService.findById(giftCard.templateId);
 
-    if (
-      template?.expirationDate &&
-      new Date() > new Date(template.expirationDate)
-    ) {
+    const expDate = getEffectiveExpiration(template, giftCard.purchaseDate);
+    if (expDate && new Date() > expDate) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
         errors: { status: 'giftCardExpired' },
