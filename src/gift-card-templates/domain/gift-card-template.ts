@@ -87,6 +87,15 @@ export class GiftCardTemplate {
   @ApiPropertyOptional({ type: () => QrPosition })
   qrPosition?: QrPosition;
 
+  @ApiPropertyOptional({
+    enum: ['none', 'fixed', 'percentage'],
+    example: 'fixed',
+  })
+  adminFeeType?: 'none' | 'fixed' | 'percentage';
+
+  @ApiPropertyOptional({ example: 2.5 })
+  adminFeeValue?: number;
+
   @ApiProperty({ type: Boolean })
   isActive: boolean;
 

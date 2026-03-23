@@ -33,6 +33,7 @@ import {
 import { infinityPagination } from '../utils/infinity-pagination';
 import { StripeService } from '../stripe/stripe.service';
 import { SettingsService } from '../settings/settings.service';
+import { GiftCardTemplatesService } from '../gift-card-templates/gift-card-templates.service';
 
 @ApiTags('Gift Cards')
 @Controller({
@@ -44,6 +45,7 @@ export class GiftCardsController {
     private readonly service: GiftCardsService,
     private readonly stripeService: StripeService,
     private readonly settingsService: SettingsService,
+    private readonly templatesService: GiftCardTemplatesService,
   ) {}
 
   @Post()
@@ -58,8 +60,16 @@ export class GiftCardsController {
     @Body() dto: CreateGiftCardDto & { successUrl: string; cancelUrl: string },
   ) {
     const settings = await this.settingsService.get();
+    const template = await this.templatesService.findById(dto.templateId);
+    const adminFee =
+      template?.adminFeeType === 'fixed'
+        ? template.adminFeeValue || 0
+        : template?.adminFeeType === 'percentage'
+          ? Math.round(dto.originalAmount * (template.adminFeeValue || 0)) / 100
+          : 0;
     return this.stripeService.createCheckoutSession({
       amount: dto.originalAmount,
+      adminFee,
       currency: settings.currency,
       metadata: {
         templateId: dto.templateId,
@@ -135,6 +145,7 @@ export class GiftCardsController {
         filterOptions: {
           status: query?.status,
           templateId: query?.templateId,
+          isArchived: query?.isArchived,
         },
         sortOptions: query?.sort,
         paginationOptions: { page, limit },
@@ -186,9 +197,37 @@ export class GiftCardsController {
     return this.service.cancel(id);
   }
 
-  @Post(':id/unredeem')
+  @Post(':id/resend-email')
   @ApiBearerAuth()
   @Roles(RoleEnum.admin, RoleEnum.staff)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @HttpCode(HttpStatus.OK)
+  async resendEmail(@Param('id') id: string) {
+    await this.service.resendEmail(id);
+    return { sent: true };
+  }
+
+  @Patch(':id/archive')
+  @ApiBearerAuth()
+  @Roles(RoleEnum.admin)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @HttpCode(HttpStatus.OK)
+  archive(@Param('id') id: string): Promise<GiftCard | null> {
+    return this.service.archive(id);
+  }
+
+  @Patch(':id/unarchive')
+  @ApiBearerAuth()
+  @Roles(RoleEnum.admin)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @HttpCode(HttpStatus.OK)
+  unarchive(@Param('id') id: string): Promise<GiftCard | null> {
+    return this.service.unarchive(id);
+  }
+
+  @Post(':id/unredeem')
+  @ApiBearerAuth()
+  @Roles(RoleEnum.admin)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @HttpCode(HttpStatus.OK)
   unredeem(

@@ -35,6 +35,11 @@ export class QueryGiftCardDto {
   @IsString()
   templateId?: string;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Transform(({ value }) => value === 'true')
+  isArchived?: boolean;
+
   @ApiPropertyOptional({ type: String })
   @IsOptional()
   @Transform(({ value }) =>

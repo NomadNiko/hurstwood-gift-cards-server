@@ -64,6 +64,12 @@ export class GiftCardTemplateSchemaClass extends EntityDocumentHelper {
   @Prop({ type: Object, default: null })
   qrPosition?: { x: number; y: number; size: number };
 
+  @Prop({ default: null })
+  adminFeeType?: string;
+
+  @Prop({ default: null })
+  adminFeeValue?: number;
+
   @Prop({ default: true })
   isActive: boolean;
 

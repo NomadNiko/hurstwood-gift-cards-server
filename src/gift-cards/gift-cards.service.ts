@@ -134,7 +134,11 @@ export class GiftCardsService {
   }
 
   findManyWithPagination(params: {
-    filterOptions?: { status?: string; templateId?: string } | null;
+    filterOptions?: {
+      status?: string;
+      templateId?: string;
+      isArchived?: boolean;
+    } | null;
     sortOptions?: SortGiftCardDto[] | null;
     paginationOptions: IPaginationOptions;
   }): Promise<GiftCard[]> {
@@ -264,6 +268,57 @@ export class GiftCardsService {
 
   async cancel(id: string): Promise<GiftCard | null> {
     return this.repository.update(id, { status: 'cancelled' });
+  }
+
+  async resendEmail(id: string): Promise<void> {
+    const giftCard = await this.repository.findById(id);
+    if (!giftCard) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: { id: 'giftCardNotFound' },
+      });
+    }
+    const template = await this.templatesService.findById(giftCard.templateId);
+    const settings = await this.settingsService.get();
+    const currencySymbol = CURRENCY_SYMBOLS[settings.currency] || '£';
+
+    const emailData = {
+      code: giftCard.code,
+      amount: giftCard.originalAmount,
+      currencySymbol,
+      currencyCode: settings.currency,
+      purchaserName: giftCard.purchaserName,
+      recipientName: giftCard.recipientName,
+      notes: giftCard.notes,
+      expirationDate: getEffectiveExpiration(template, giftCard.purchaseDate),
+      templateImage: template?.image,
+      codePosition: template?.codePosition,
+      qrPosition: template?.qrPosition,
+    };
+
+    await this.mailService.giftCardPurchase({
+      to: giftCard.purchaserEmail,
+      data: emailData,
+    });
+
+    if (
+      giftCard.recipientEmail &&
+      giftCard.recipientEmail !== giftCard.purchaserEmail
+    ) {
+      await this.mailService.giftCardPurchase(
+        { to: giftCard.recipientEmail, data: emailData },
+        [],
+        true,
+      );
+    }
+  }
+
+  async archive(id: string): Promise<GiftCard | null> {
+    return this.repository.update(id, { isArchived: true });
+  }
+
+  async unarchive(id: string): Promise<GiftCard | null> {
+    return this.repository.update(id, { isArchived: false });
   }
 
   async unredeem(

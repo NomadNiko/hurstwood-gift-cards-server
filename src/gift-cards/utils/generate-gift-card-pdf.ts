@@ -51,6 +51,9 @@ body{width:800px;font-family:Arial,sans-serif;background:#fff}
 .details h2{font-family:monospace;font-size:28px;margin-bottom:8px;letter-spacing:2px;color:#00838f}
 .details h3{font-size:24px;color:#333;margin-bottom:12px}
 .details p{font-size:14px;color:#555;margin-top:8px}
+.disclaimer{text-align:left;padding:16px 24px;font-size:11px;color:#666;border-top:1px solid #ddd;margin-top:12px;line-height:1.6}
+.disclaimer strong{color:#333}
+.disclaimer a{color:#00838f}
 </style></head><body>
 <div class="card">
 <img src="${opts.templateImage}" />
@@ -62,6 +65,15 @@ ${qrHtml}
 <h3>${opts.currencySymbol}${opts.amount}</h3>
 ${opts.recipientName ? `<p>For: ${opts.recipientName}</p>` : ''}
 ${opts.notes ? `<p style="font-style:italic">&ldquo;${opts.notes}&rdquo;</p>` : ''}
+</div>
+<div class="disclaimer">
+<p>All vouchers are valid for 12 months from the date of purchase.</p>
+<p>Vouchers purchased online are subject to a 3.5% Transaction Fee.</p>
+<p>To redeem a voucher, please make a reservation:<br/>
+Website: <a href="https://www.thehurstwood.com">www.thehurstwood.com</a><br/>
+Email: <a href="mailto:bookings@thehurstwood.com">bookings@thehurstwood.com</a><br/>
+Phone: <a href="tel:+441825732257">+44 1825 732257</a></p>
+<p><strong>THIS VOUCHER DOES NOT HAVE A CASH VALUE.</strong></p>
 </div>
 </body></html>`;
 }

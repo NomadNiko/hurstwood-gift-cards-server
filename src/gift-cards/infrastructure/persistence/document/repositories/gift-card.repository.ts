@@ -28,13 +28,22 @@ export class GiftCardsDocumentRepository implements GiftCardRepository {
     sortOptions,
     paginationOptions,
   }: {
-    filterOptions?: { status?: string; templateId?: string } | null;
+    filterOptions?: {
+      status?: string;
+      templateId?: string;
+      isArchived?: boolean;
+    } | null;
     sortOptions?: SortGiftCardDto[] | null;
     paginationOptions: IPaginationOptions;
   }): Promise<GiftCard[]> {
     const where: FilterQuery<GiftCardSchemaClass> = {};
     if (filterOptions?.status) where.status = filterOptions.status;
     if (filterOptions?.templateId) where.templateId = filterOptions.templateId;
+    if (filterOptions?.isArchived === true) {
+      where.isArchived = true;
+    } else {
+      where.$or = [{ isArchived: { $ne: true } }, { isArchived: null }];
+    }
 
     const results = await this.model
       .find(where)

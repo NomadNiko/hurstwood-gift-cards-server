@@ -16,24 +16,36 @@ export class StripeService {
 
   async createCheckoutSession(params: {
     amount: number;
+    adminFee?: number;
     currency: string;
     metadata: Record<string, string>;
     successUrl: string;
     cancelUrl: string;
   }): Promise<{ sessionId: string; url: string }> {
     const stripe = await this.getClient();
+    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [
+      {
+        price_data: {
+          currency: params.currency.toLowerCase(),
+          product_data: { name: 'Gift Voucher' },
+          unit_amount: Math.round(params.amount * 100),
+        },
+        quantity: 1,
+      },
+    ];
+    if (params.adminFee && params.adminFee > 0) {
+      lineItems.push({
+        price_data: {
+          currency: params.currency.toLowerCase(),
+          product_data: { name: 'Processing Fee' },
+          unit_amount: Math.round(params.adminFee * 100),
+        },
+        quantity: 1,
+      });
+    }
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: params.currency.toLowerCase(),
-            product_data: { name: 'Gift Card' },
-            unit_amount: Math.round(params.amount * 100),
-          },
-          quantity: 1,
-        },
-      ],
+      line_items: lineItems,
       mode: 'payment',
       metadata: params.metadata,
       success_url: params.successUrl,

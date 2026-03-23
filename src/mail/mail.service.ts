@@ -231,9 +231,9 @@ export class MailService {
       bcc: bcc?.length ? bcc : undefined,
       attachments,
       subject: isRecipient
-        ? `You Received a Gift Card from ${mailData.data.purchaserName}`
-        : `Your Gift Card from ${this.configService.get('app.name', { infer: true })}`,
-      text: `Your gift card code is ${mailData.data.code} for ${mailData.data.currencySymbol}${mailData.data.amount}`,
+        ? `You Received a Gift Voucher from ${mailData.data.purchaserName}`
+        : `Your Gift Voucher from ${this.configService.get('app.name', { infer: true })}`,
+      text: `Your gift voucher code is ${mailData.data.code} for ${mailData.data.currencySymbol}${mailData.data.amount}`,
       templatePath: path.join(
         this.configService.getOrThrow('app.workingDirectory', {
           infer: true,
@@ -274,8 +274,8 @@ export class MailService {
 
     await this.mailerService.sendMail({
       to: mailData.to,
-      subject: `New Gift Card Purchase - ${mailData.currencySymbol}${mailData.amount.toFixed(2)}`,
-      text: `New gift card purchased: ${mailData.code} for ${mailData.currencySymbol}${mailData.amount.toFixed(2)} by ${mailData.purchaserName} (${mailData.purchaserEmail})`,
+      subject: `New Gift Voucher Purchase - ${mailData.currencySymbol}${mailData.amount.toFixed(2)}`,
+      text: `New gift voucher purchased: ${mailData.code} for ${mailData.currencySymbol}${mailData.amount.toFixed(2)} by ${mailData.purchaserName} (${mailData.purchaserEmail})`,
       templatePath: path.join(
         this.configService.getOrThrow('app.workingDirectory', {
           infer: true,

@@ -9,7 +9,11 @@ export abstract class GiftCardRepository {
   ): Promise<GiftCard>;
 
   abstract findManyWithPagination(params: {
-    filterOptions?: { status?: string; templateId?: string } | null;
+    filterOptions?: {
+      status?: string;
+      templateId?: string;
+      isArchived?: boolean;
+    } | null;
     sortOptions?: SortGiftCardDto[] | null;
     paginationOptions: IPaginationOptions;
   }): Promise<GiftCard[]>;

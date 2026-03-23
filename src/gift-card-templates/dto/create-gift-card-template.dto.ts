@@ -135,4 +135,16 @@ export class CreateGiftCardTemplateDto {
   @ValidateNested()
   @Type(() => QrPositionDto)
   qrPosition?: QrPositionDto;
+
+  @ApiPropertyOptional({ enum: ['none', 'fixed', 'percentage'] })
+  @IsOptional()
+  @IsIn(['none', 'fixed', 'percentage'])
+  adminFeeType?: 'none' | 'fixed' | 'percentage';
+
+  @ApiPropertyOptional({ example: 2.5 })
+  @IsOptional()
+  @ValidateIf((o) => o.adminFeeValue !== null)
+  @IsNumber()
+  @Min(0)
+  adminFeeValue?: number | null;
 }

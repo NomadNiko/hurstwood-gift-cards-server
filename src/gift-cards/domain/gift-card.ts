@@ -80,6 +80,9 @@ export class GiftCard {
   @ApiPropertyOptional()
   squarespaceOrderId?: string;
 
+  @ApiPropertyOptional()
+  isArchived?: boolean;
+
   @ApiProperty()
   createdAt: Date;
 

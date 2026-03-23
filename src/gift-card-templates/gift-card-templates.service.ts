@@ -27,6 +27,8 @@ export class GiftCardTemplatesService {
       expirationMonths: dto.expirationMonths || undefined,
       codePrefix: dto.codePrefix || 'GC',
       qrPosition: dto.qrPosition,
+      adminFeeType: dto.adminFeeType || undefined,
+      adminFeeValue: dto.adminFeeValue ?? undefined,
       isActive: dto.isActive ?? true,
       createdBy: userId,
     });
@@ -65,6 +67,16 @@ export class GiftCardTemplatesService {
     }
     if ('expirationMonths' in dto && !dto.expirationMonths) {
       payload.expirationMonths = null;
+    }
+    if (
+      'adminFeeType' in dto &&
+      (!dto.adminFeeType || dto.adminFeeType === 'none')
+    ) {
+      payload.adminFeeType = null;
+      payload.adminFeeValue = null;
+    }
+    if ('adminFeeValue' in dto && !dto.adminFeeValue) {
+      payload.adminFeeValue = null;
     }
     return this.repository.update(id, payload);
   }

@@ -80,7 +80,7 @@ export class WidgetsService {
   function createWidget() {
     const container = document.getElementById('gift-card-widget-${apiKey}');
     if (!container) {
-      console.error('Gift card widget container not found. Add <div id="gift-card-widget-${apiKey}"></div> to your page.');
+      console.error('Gift voucher widget container not found. Add <div id="gift-card-widget-${apiKey}"></div> to your page.');
       return;
     }
 
@@ -95,7 +95,7 @@ export class WidgetsService {
     iframe.style.cssText = 'width: 100%; max-width: 600px; height: 660px; border: none; display: block; overflow: hidden;';
     iframe.setAttribute('allow', 'clipboard-write');
     iframe.setAttribute('scrolling', 'no');
-    iframe.setAttribute('title', 'Gift Card Purchase Widget');
+    iframe.setAttribute('title', 'Gift Voucher Purchase Widget');
 
     container.appendChild(iframe);
 

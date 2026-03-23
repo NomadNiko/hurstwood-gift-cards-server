@@ -31,6 +31,9 @@ export class GiftCardTemplateMapper {
     domain.expirationMonths = raw.expirationMonths ?? undefined;
     domain.codePrefix = raw.codePrefix || 'GC';
     domain.qrPosition = raw.qrPosition || undefined;
+    domain.adminFeeType =
+      (raw.adminFeeType as 'none' | 'fixed' | 'percentage') || undefined;
+    domain.adminFeeValue = raw.adminFeeValue ?? undefined;
     domain.createdBy = raw.createdBy;
     domain.createdAt = raw.createdAt;
     domain.updatedAt = raw.updatedAt;
@@ -53,6 +56,8 @@ export class GiftCardTemplateMapper {
     persistence.expirationMonths = domain.expirationMonths;
     persistence.codePrefix = domain.codePrefix;
     persistence.qrPosition = domain.qrPosition;
+    persistence.adminFeeType = domain.adminFeeType;
+    persistence.adminFeeValue = domain.adminFeeValue;
     persistence.createdBy = domain.createdBy;
     persistence.createdAt = domain.createdAt;
     persistence.updatedAt = domain.updatedAt;

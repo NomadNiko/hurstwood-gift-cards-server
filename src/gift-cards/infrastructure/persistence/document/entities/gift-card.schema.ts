@@ -90,6 +90,9 @@ export class GiftCardSchemaClass extends EntityDocumentHelper {
   @Prop({ index: true })
   squarespaceOrderId?: string;
 
+  @Prop({ default: false })
+  isArchived?: boolean;
+
   @Prop({ default: now })
   createdAt: Date;
 
