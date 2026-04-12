@@ -67,7 +67,7 @@ export class GiftCardsController {
         : template?.adminFeeType === 'percentage'
           ? Math.round(dto.originalAmount * (template.adminFeeValue || 0)) / 100
           : 0;
-    return this.stripeService.createCheckoutSession({
+    const session = await this.stripeService.createCheckoutSession({
       amount: dto.originalAmount,
       adminFee,
       currency: settings.currency,
@@ -84,6 +84,23 @@ export class GiftCardsController {
       successUrl: dto.successUrl,
       cancelUrl: dto.cancelUrl,
     });
+
+    return session;
+  }
+
+  @Post('notify-purchase')
+  @HttpCode(HttpStatus.OK)
+  async notifyPurchase(@Body() dto: { stripeSessionId: string }) {
+    const meta = await this.stripeService.retrieveSessionMetadata(
+      dto.stripeSessionId,
+    );
+    await this.service.sendStaffNotification({
+      amount: parseFloat(meta.originalAmount),
+      purchaserName: meta.purchaserName,
+      purchaserEmail: meta.purchaserEmail,
+      recipientName: meta.recipientName || undefined,
+    });
+    return { sent: true };
   }
 
   @Post('stripe-webhook')

@@ -91,38 +91,53 @@ export class GiftCardsService {
       qrPosition: template?.qrPosition,
     };
 
-    // Send email to purchaser (BCC notification list)
+    // Send email to purchaser
     await this.mailService
-      .giftCardPurchase({ to: dto.purchaserEmail, data: emailData }, bcc)
+      .giftCardPurchase({ to: dto.purchaserEmail, data: emailData })
       .catch(() => {});
 
-    // If there's a separate recipient, email them too (BCC notification list)
+    // If there's a separate recipient, email them too
     if (dto.recipientEmail && dto.recipientEmail !== dto.purchaserEmail) {
       await this.mailService
         .giftCardPurchase(
           { to: dto.recipientEmail, data: emailData },
-          bcc,
+          undefined,
           true,
         )
         .catch(() => {});
     }
 
-    // Send purchase notification to email list
+    // Forward the voucher email to the notification list so staff can confirm it was issued
     if (bcc.length) {
       await this.mailService
-        .giftCardPurchaseNotification({
-          to: bcc,
-          code: giftCard.code,
-          amount: giftCard.originalAmount,
-          currencySymbol,
-          purchaserName: dto.purchaserName,
-          purchaserEmail: dto.purchaserEmail,
-          recipientName: dto.recipientName,
-        })
+        .giftCardPurchase({ to: bcc.join(','), data: emailData })
         .catch(() => {});
     }
 
     return giftCard;
+  }
+
+  async sendStaffNotification(data: {
+    amount: number;
+    purchaserName: string;
+    purchaserEmail: string;
+    recipientName?: string;
+  }): Promise<void> {
+    const settings = await this.settingsService.get();
+    const bcc = settings.notificationEmails || [];
+    if (!bcc.length) return;
+    const currencySymbol = CURRENCY_SYMBOLS[settings.currency] || '£';
+    await this.mailService
+      .giftCardPurchaseNotification({
+        to: bcc,
+        code: 'Pending',
+        amount: data.amount,
+        currencySymbol,
+        purchaserName: data.purchaserName,
+        purchaserEmail: data.purchaserEmail,
+        recipientName: data.recipientName,
+      })
+      .catch(() => {});
   }
 
   findByStripeSessionId(sessionId: string): Promise<NullableType<GiftCard>> {

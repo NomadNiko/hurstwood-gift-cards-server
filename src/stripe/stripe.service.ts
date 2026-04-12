@@ -66,4 +66,12 @@ export class StripeService {
       settings.stripeWebhookSecret || '',
     );
   }
+
+  async retrieveSessionMetadata(
+    sessionId: string,
+  ): Promise<Record<string, string>> {
+    const stripe = await this.getClient();
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    return (session.metadata as Record<string, string>) || {};
+  }
 }
