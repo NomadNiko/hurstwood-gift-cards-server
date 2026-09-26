@@ -59,5 +59,7 @@ export default registerAs<MailConfig>('mail', () => {
     ignoreTLS: process.env.MAIL_IGNORE_TLS === 'true',
     secure: process.env.MAIL_SECURE === 'true',
     requireTLS: process.env.MAIL_REQUIRE_TLS === 'true',
+    provider: process.env.MAIL_PROVIDER,
+    resendApiKey: process.env.RESEND_API_KEY,
   };
 });

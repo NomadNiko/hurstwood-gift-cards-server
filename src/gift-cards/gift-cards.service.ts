@@ -45,6 +45,14 @@ export class GiftCardsService {
     stripeSessionId?: string,
     squarespaceOrderId?: string,
   ): Promise<GiftCard> {
+    // Stripe redelivers webhooks (sometimes repeatedly) for the same
+    // checkout session, so guard against re-purchasing on retries.
+    if (stripeSessionId) {
+      const existing =
+        await this.repository.findByStripeSessionId(stripeSessionId);
+      if (existing) return existing;
+    }
+
     const template = await this.templatesService.findById(dto.templateId);
     const prefix = template?.codePrefix || 'GC';
 

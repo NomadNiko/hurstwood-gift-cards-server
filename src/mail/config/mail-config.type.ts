@@ -8,4 +8,6 @@ export type MailConfig = {
   ignoreTLS: boolean;
   secure: boolean;
   requireTLS: boolean;
+  provider?: string;
+  resendApiKey?: string;
 };

@@ -91,7 +91,7 @@ export async function generateGiftCardPdf(
     const page = await browser.newPage();
     await page.setViewport({ width: 800, height: 600 });
     await page.setContent(buildHtml(opts, qrDataUrl), {
-      waitUntil: 'networkidle0',
+      waitUntil: 'load',
     });
     const pdf = await page.pdf({
       width: '800px',
@@ -129,7 +129,7 @@ export async function generateGiftCardImage(
 .overlay .code{font-size:${cp.fontSize || 16}px;color:${cp.fontColor || '#000'};font-weight:bold;white-space:nowrap;line-height:1.2}
 .overlay .exp{font-size:${(cp.fontSize || 16) * 0.6}px;color:${cp.fontColor || '#000'};white-space:nowrap;line-height:1;margin-left:8px}
 </style></head><body><div class="card"><img src="${opts.templateImage}" /><div class="overlay"><span class="code">${opts.code}</span><span class="exp">${opts.expirationLabel}</span></div>${qrHtml}</div></body></html>`;
-    await page.setContent(cardHtml, { waitUntil: 'networkidle0' });
+    await page.setContent(cardHtml, { waitUntil: 'load' });
     const card = await page.$('.card');
     const screenshot = await card!.screenshot({ type: 'png' });
     return Buffer.from(screenshot);

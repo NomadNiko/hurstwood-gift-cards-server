@@ -7,7 +7,7 @@ import { FilesLocalController } from './files.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { diskStorage } from 'multer';
-import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
+import { randomBytes } from 'crypto';
 
 import { FilesLocalService } from './files.service';
 
@@ -52,7 +52,7 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
             filename: (request, file, callback) => {
               callback(
                 null,
-                `${randomStringGenerator()}.${file.originalname
+                `${randomBytes(16).toString('hex')}.${file.originalname
                   .split('.')
                   .pop()
                   ?.toLowerCase()}`,
